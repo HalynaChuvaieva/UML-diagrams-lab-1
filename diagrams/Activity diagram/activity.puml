@@ -1,0 +1,54 @@
+@startuml
+skinparam activity {
+  BackgroundColor #FFFFFF
+  BorderColor #CC0000
+  ArrowColor #CC0000
+  FontName Arial
+}
+
+skinparam activityDiamond {
+  BackgroundColor #FFEEEE
+  BorderColor #CC0000
+}
+
+skinparam note {
+  BackgroundColor #FFFFCC
+  BorderColor #CCCC00
+}
+
+start
+
+:User selects a data structure\n(via StructureMenu);
+:App.tsx renders the corresponding view\n(e.g., ListView.jsx);
+
+repeat :User enters a value in the input field;
+  :User clicks "Insert", "Push", or "Enqueue";
+  
+  if (Is input valid?\n(not empty, valid number)) then (Yes)
+    :Create a copy of current data\nor instantiate logic class;
+    
+    :Execute business logic method\n(e.g., list.insert_at(), bst.insert());
+    
+    :Update React state\n(e.g., setList(), setValues());
+    
+    :React triggers component re-render;
+    
+    if (Does component use Framer Motion?) then (Yes (List, Stack, Queue))
+      :Play layout animation\n(<motion.div> transitions);
+    else (No (BST, Graph))
+      :Instantly draw new SVG elements\n(<circle>, <line>);
+    endif
+    
+    :UI successfully updated;
+    
+  else (No)
+    :Ignore action or show error message;
+  endif
+  
+repeat while (Continue interacting with current structure?) is (Yes)
+-> No;
+
+:User switches to another structure\nor leaves the app;
+
+stop
+@enduml

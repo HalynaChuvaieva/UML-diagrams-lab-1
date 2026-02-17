@@ -1,0 +1,57 @@
+@startuml
+skinparam state {
+  BackgroundColor #FFFFFF
+  BorderColor #CC0000
+  ArrowColor #CC0000
+  FontName Arial
+}
+
+skinparam note {
+  BackgroundColor #FFFFCC
+  BorderColor #CCCC00
+}
+
+title State Diagram: Visualization Player
+
+[*] --> Ready
+
+state Ready {
+  Ready : App initialized
+  Ready : Waiting for user action
+}
+
+state ManualStepping {
+  ManualStepping : User manually controls steps
+  ManualStepping : historyIndex points to latest
+}
+
+state AutoPlaying {
+  AutoPlaying : setInterval is active
+  AutoPlaying : Automatically stepping forward
+}
+
+state HistoryBrowsing {
+  HistoryBrowsing : historyIndex < latest
+  HistoryBrowsing : Browsing past states
+}
+
+Ready --> ManualStepping : Click "Forward" / Insert / Push
+Ready --> AutoPlaying : Check "Auto-play"
+
+ManualStepping --> ManualStepping : Click "Forward"
+ManualStepping --> AutoPlaying : Check "Auto-play"
+ManualStepping --> HistoryBrowsing : Click "Back"
+
+AutoPlaying --> AutoPlaying : Timer tick (stepForward)
+AutoPlaying --> ManualStepping : Uncheck "Auto-play"
+
+HistoryBrowsing --> HistoryBrowsing : Click "Back" / "Forward"
+HistoryBrowsing --> ManualStepping : Reach latest state (historyIndex = max)
+HistoryBrowsing --> AutoPlaying : Check "Auto-play"
+
+Ready --> Ready : Change Algorithm / Reset
+ManualStepping --> Ready : Change Algorithm / Reset
+AutoPlaying --> Ready : Change Algorithm / Reset
+HistoryBrowsing --> Ready : Change Algorithm / Reset
+
+@enduml

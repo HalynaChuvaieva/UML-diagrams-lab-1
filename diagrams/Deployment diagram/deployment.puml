@@ -1,0 +1,59 @@
+@startuml
+left to right direction
+
+skinparam node {
+  BackgroundColor #FFFFFF
+  BorderColor #CC0000
+  FontName Arial
+}
+
+skinparam artifact {
+  BackgroundColor #FFEEEE
+  BorderColor #CC0000
+  FontName Arial
+}
+
+skinparam component {
+  BackgroundColor #FF5555
+  BorderColor #CC0000
+  FontColor #FFFFFF
+  FontName Arial
+}
+
+skinparam note {
+  BackgroundColor #FFFFCC
+  BorderColor #CCCC00
+}
+
+node "Client Device\n(Desktop, Laptop, Mobile)" as ClientDevice {
+  node "Web Browser\n(Chrome, Safari, Edge)" as Browser {
+    artifact "React SPA\n(Algorithm Visualizer)" as SPA {
+      component "UI Components" as UI
+      component "Algorithms Logic" as Logic
+    }
+  }
+}
+
+node "Static Web Hosting\n(e.g., Vercel, Netlify, GitHub Pages)" as Hosting {
+  node "Web Server" as WebServer {
+    artifact "index.html" as HTML
+    artifact "Compiled JS Bundle\n(React + Logic)" as JSBundle
+    artifact "Compiled CSS Bundle\n(Tailwind)" as CSSBundle
+  }
+}
+
+' Зв'язки
+ClientDevice ..> Hosting : <<protocol>>\nHTTPS (Requests static assets)
+
+HTML ..> SPA : "Loads"
+JSBundle ..> SPA : "Executes"
+CSSBundle ..> SPA : "Styles"
+
+note bottom of Hosting
+  The React app is built
+  into static files using 
+  tools like Vite or Webpack 
+  before deployment.
+end note
+
+@enduml

@@ -1,0 +1,59 @@
+@startuml
+skinparam sequence {
+  LifeLineBorderColor #CC0000
+  LifeLineBackgroundColor #FFEEEE
+  ParticipantBorderColor #CC0000
+  ParticipantBackgroundColor #FFFFFF
+  ActorBorderColor #CC0000
+  ActorBackgroundColor #FF5555
+  ArrowColor #CC0000
+  NoteBackgroundColor #FFFFCC
+  NoteBorderColor #CCCC00
+}
+
+actor User
+participant "App.tsx" as App
+participant "View Component\n(e.g., ListView)" as View
+participant "Logic Class\n(e.g., LinkedList)" as Logic
+
+== Initialization ==
+User -> App: Select Data Structure (via Menu)
+activate App
+
+App -> View: Render specific View component
+activate View
+View --> App: Component mounted (Initial State)
+deactivate App
+
+View --> User: Display empty structure / initial data
+
+== User Interaction (e.g., Insert) ==
+User -> View: Enter value & click "Insert"
+
+View -> View: Validate input\n(e.g., check if empty or NaN)
+
+alt Input is Valid
+    View -> Logic: Create instance (if needed) & Call method\n(e.g., insert_at(idx, val))
+    activate Logic
+    
+    Logic -> Logic: Update internal data structure array/nodes
+    Logic --> View: Return updated data (e.g., .toArray())
+    deactivate Logic
+
+    View -> View: Update React State\n(e.g., setList(newData))
+    
+    note right of View
+      React detects state change
+      and triggers re-render
+    end note
+    
+    View -> View: Re-render DOM/SVG
+    
+    View --> User: Display updated UI\n(with Framer Motion animation or SVG redraw)
+
+else Input is Invalid
+    View --> User: Ignore action or display error message
+end
+
+deactivate View
+@enduml

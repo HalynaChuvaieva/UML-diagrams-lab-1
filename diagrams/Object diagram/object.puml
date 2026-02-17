@@ -1,0 +1,50 @@
+@startuml
+skinparam object {
+  BackgroundColor #FFFFFF
+  BorderColor #CC0000
+  ArrowColor #CC0000
+  HeaderBackgroundColor #FFEEEE
+  FontName Arial
+}
+
+skinparam note {
+  BackgroundColor #FFFFCC
+  BorderColor #CCCC00
+}
+
+title Object Diagram: Snapshot of App Memory (BST Mode)
+
+note "Memory snapshot at runtime\nafter inserting values 30, 15, and 45" as N1
+
+object "<u>currentState : AppState</u>" as state {
+  algName = "Binary Tree - Demo"
+  listData = [30, 15, 45]
+  currentStep = 3
+}
+
+object "<u>myTree : SimpleBST</u>" as bst {
+  root = n30
+}
+
+object "<u>n30 : TreeNode</u>" as n30 {
+  v = 30
+}
+
+object "<u>n15 : TreeNode</u>" as n15 {
+  v = 15
+  left = null
+  right = null
+}
+
+object "<u>n45 : TreeNode</u>" as n45 {
+  v = 45
+  left = null
+  right = null
+}
+
+state --> bst : "creates"
+bst --> n30 : "root"
+n30 --> n15 : "left"
+n30 --> n45 : "right"
+
+@enduml

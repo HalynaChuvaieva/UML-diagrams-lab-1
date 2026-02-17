@@ -1,0 +1,144 @@
+@startuml
+left to right direction
+skinparam packageStyle rectangle
+
+skinparam usecase {
+  BackgroundColor #FFEEEE
+  BorderColor #CC0000
+  ArrowColor #CC0000
+}
+
+skinparam actor {
+  BackgroundColor #FF5555
+  BorderColor #CC0000
+}
+
+skinparam rectangle {
+  BorderColor #AA0000
+}
+
+actor "User" as User
+
+rectangle "Algorithm Visualizer App" {
+
+  usecase "Select Structure Type\n(via StructureMenu)" as UC_SelectStruct
+  
+  package "List Interaction (ListView)" {
+    usecase "View Linked List" as UC_ViewList
+    usecase "Insert element by index" as UC_ListInsert
+    usecase "Remove element by index" as UC_ListRemove
+    usecase "Clear list" as UC_ListClear
+    
+    ' Нові прецеденти для списку
+    usecase "Append element (to end)" as UC_ListAppend
+    usecase "Prepend element (to start)" as UC_ListPrepend
+    usecase "Get element by index" as UC_ListGet
+    usecase "Find element (indexOf)" as UC_ListIndexOf
+    usecase "Check list size & status" as UC_ListStatus
+  }
+
+  package "Queue Interaction (QueueView)" {
+    usecase "View Queue" as UC_ViewQueue
+    usecase "Enqueue element" as UC_QueueEnq
+    usecase "Dequeue element" as UC_QueueDeq
+    usecase "Clear queue" as UC_QueueClear
+    
+    ' Нові прецеденти для черги
+    usecase "Peek front element" as UC_QueuePeek
+    usecase "Check queue size & status" as UC_QueueStatus
+  }
+
+  package "Stack Interaction (StackView)" {
+    usecase "View Stack" as UC_ViewStack
+    usecase "Push element" as UC_StackPush
+    usecase "Pop element" as UC_StackPop
+    usecase "Clear stack" as UC_StackClear
+    
+    ' Нові прецеденти для стеку
+    usecase "Peek top element" as UC_StackPeek
+    usecase "Check stack size & status" as UC_StackStatus
+  }
+
+  package "Tree Interaction (BSTView)" {
+    usecase "View Binary Search Tree" as UC_ViewBST
+    usecase "Insert node" as UC_BSTInsert
+    usecase "Clear tree" as UC_BSTClear
+  }
+
+  package "Graph Interaction (GraphView)" {
+    usecase "View Graph" as UC_ViewGraph
+    usecase "Add vertex" as UC_GraphAddV
+    usecase "Add edge" as UC_GraphAddE
+    usecase "Clear graph" as UC_GraphClear
+  }
+  
+  usecase "Observe animation\n(Framer Motion)" as UC_Animate
+}
+
+' Зв'язки користувача зі Списком
+User --> UC_SelectStruct
+User --> UC_ListInsert
+User --> UC_ListRemove
+User --> UC_ListClear
+User --> UC_ListAppend
+User --> UC_ListPrepend
+User --> UC_ListGet
+User --> UC_ListIndexOf
+User --> UC_ListStatus
+
+' Зв'язки користувача з Чергою
+User --> UC_QueueEnq
+User --> UC_QueueDeq
+User --> UC_QueueClear
+User --> UC_QueuePeek
+User --> UC_QueueStatus
+
+' Зв'язки користувача зі Стеком
+User --> UC_StackPush
+User --> UC_StackPop
+User --> UC_StackClear
+User --> UC_StackPeek
+User --> UC_StackStatus
+
+' Зв'язки користувача з Деревом та Графом
+User --> UC_BSTInsert
+User --> UC_BSTClear
+User --> UC_GraphAddV
+User --> UC_GraphAddE
+User --> UC_GraphClear
+
+' Include relationships (Дія обов'язково включає відображення/анімацію)
+UC_SelectStruct ..> UC_ViewList : <<include>>
+UC_SelectStruct ..> UC_ViewQueue : <<include>>
+UC_SelectStruct ..> UC_ViewStack : <<include>>
+UC_SelectStruct ..> UC_ViewBST : <<include>>
+UC_SelectStruct ..> UC_ViewGraph : <<include>>
+
+' Анімація спрацьовує при зміні даних
+UC_ListInsert ..> UC_Animate : <<include>>
+UC_ListRemove ..> UC_Animate : <<include>>
+UC_ListAppend ..> UC_Animate : <<include>>
+UC_ListPrepend ..> UC_Animate : <<include>>
+
+UC_QueueEnq ..> UC_Animate : <<include>>
+UC_QueueDeq ..> UC_Animate : <<include>>
+
+UC_StackPush ..> UC_Animate : <<include>>
+UC_StackPop ..> UC_Animate : <<include>>
+
+' Архітектурні нотатки
+note right of UC_ViewBST
+  Under the hood it may use:
+  - SimpleBST
+  - BalancedBST
+  - AVLTree
+end note
+
+note right of UC_ViewGraph
+  Under the hood it may use:
+  - DirectedGraph
+  - WeightedGraph
+  - NegativeWeightedGraph
+end note
+
+@enduml

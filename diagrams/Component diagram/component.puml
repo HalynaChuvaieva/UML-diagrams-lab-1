@@ -1,0 +1,80 @@
+@startuml
+left to right direction
+
+skinparam component {
+  BackgroundColor #FFFFFF
+  BorderColor #CC0000
+  ArrowColor #CC0000
+  FontName Arial
+}
+
+skinparam package {
+  BackgroundColor #FFEEEE
+  BorderColor #AA0000
+  FontName Arial
+}
+
+skinparam interface {
+  BackgroundColor #FF5555
+  BorderColor #CC0000
+}
+
+skinparam note {
+  BackgroundColor #FFFFCC
+  BorderColor #CCCC00
+}
+
+package "Algorithm Visualizer App (Frontend)" {
+  
+  component "[App.tsx]\nMain Container" as App
+  
+  package "components/" {
+    component "[StructureMenu.jsx]" as Menu
+  }
+  
+  package "components/visualizer/" {
+    component "[ListView.jsx]" as UI_List
+    component "[QueueView.jsx]" as UI_Queue
+    component "[StackView.jsx]" as UI_Stack
+    component "[BSTView.jsx]" as UI_BST
+    component "[GraphView.jsx]" as UI_Graph
+  }
+}
+
+package "algorithms/ (Business Logic)" {
+  component "Linear Structures\n(LinkedList, Queue, Stack)" as Alg_Linear
+  component "Tree Structures\n(SimpleBST, BalancedBST, AVLTree)" as Alg_Tree
+  component "Graph Structures\n(Graph, Directed, Weighted, Negative)" as Alg_Graph
+}
+
+package "External Libraries" {
+  component "Framer Motion\n(Animation)" as Framer
+  component "React\n(Hooks: useState, useEffect)" as ReactLib
+}
+
+App ..> Menu : <<uses>>
+App ..> UI_List : <<renders conditionally>>
+App ..> UI_Queue : <<renders conditionally>>
+App ..> UI_Stack : <<renders conditionally>>
+App ..> UI_BST : <<renders conditionally>>
+App ..> UI_Graph : <<renders conditionally>>
+
+UI_List ..> Alg_Linear : <<imports & uses>>
+UI_Queue ..> Alg_Linear : <<imports & uses>>
+UI_Stack ..> Alg_Linear : <<imports & uses>>
+
+UI_BST ..> Alg_Tree : <<imports & uses>>
+UI_Graph ..> Alg_Graph : <<imports & uses>>
+
+UI_List ..> Framer : <<animates with>>
+UI_Queue ..> Framer : <<animates with>>
+UI_Stack ..> Framer : <<animates with>>
+
+App ..> ReactLib
+UI_List ..> ReactLib
+UI_Queue ..> ReactLib
+UI_Stack ..> ReactLib
+UI_BST ..> ReactLib
+UI_Graph ..> ReactLib
+
+@enduml

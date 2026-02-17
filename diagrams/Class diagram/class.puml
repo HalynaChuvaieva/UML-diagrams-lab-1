@@ -1,0 +1,125 @@
+@startuml
+skinparam class {
+  BackgroundColor #FFFFFF
+  ArrowColor #CC0000
+  BorderColor #CC0000
+  HeaderBackgroundColor #FFEEEE
+}
+
+skinparam note {
+  BackgroundColor #FFFFCC
+  BorderColor #CCCC00
+}
+
+interface TreeNode<T> {
+  + v: T
+  + left: TreeNode<T> | null
+  + right: TreeNode<T> | null
+  + height?: number
+}
+
+class SimpleBST<T> {
+  - root: TreeNode<T> | null
+  + insert(v: T): void
+  + inorder(): T[]
+  + minValue(node: TreeNode<T>): T | null
+  + deleteNode(value: T): void
+  + clear(): void
+  # createNode(v: T): TreeNode<T>
+  # _insert(node: TreeNode<T>, v: T): TreeNode<T>
+  # _deleteNode(node: TreeNode<T>, value: T): TreeNode<T> | null
+  # _inorder(node: TreeNode<T>, out: T[]): void
+}
+
+class BalancedBST<T> {
+  + getHeight(node: TreeNode<T>): number
+}
+
+class AVLTree<T> {
+  + height(node: TreeNode<T>): number
+  + getBalance(node: TreeNode<T>): number
+  + rotateRight(y: TreeNode<T>): TreeNode<T>
+  + rotateLeft(x: TreeNode<T>): TreeNode<T>
+  # _insert(node: TreeNode<T>, v: T): TreeNode<T>
+}
+
+SimpleBST ..> TreeNode : "uses"
+SimpleBST <|-- BalancedBST
+SimpleBST <|-- AVLTree
+
+class Graph<T> {
+  + vertices: T[]
+  + edges: [T, T][]
+  + addVertex(v: T): void
+  + addEdge(u: T, v: T): void
+  + clear(): void
+  + toJSON(): object
+  + fromJSON(obj: object): void
+  + bfs(start: T): T[]
+  + buildSpanningTree(start: T): object
+}
+
+class DirectedGraph<T> {
+  + addEdge(u: T, v: T): void
+  + dfs(start: T): T[]
+  + getInDegree(v: T): number
+  + getOutDegree(v: T): number
+  + isCyclic(): boolean
+}
+
+class WeightedGraph<T> {
+  + weightedEdges: [T, T, number][]
+  + addEdge(u: T, v: T, w: number): void
+  + addUndirectedEdge(u: T, v: T, w: number): void
+  + getWeight(u: T, v: T): number
+  + dijkstra(start: T): Map<T, number>
+}
+
+class NegativeWeightedGraph<T> {
+  + weightedEdges: [T, T, number][]
+  + addEdge(u: T, v: T, w: number): void
+  + BellmanFord(start: T): Map<T, number>
+}
+
+Graph <|-- DirectedGraph
+Graph <|-- WeightedGraph
+Graph <|-- NegativeWeightedGraph
+
+class LinkedList {
+  + arr: any[]
+  + insert_at(idx: number, value: any): void
+  + remove_at(idx: number): void
+  + clear(): void
+  + toArray(): any[]
+  + append(value: any): void
+  + prepend(value: any): void
+  + get(idx: number): any
+  + indexOf(value: any): number
+  + isEmpty(): boolean
+  + size(): number
+}
+
+class SimpleQueue {
+  + arr: any[]
+  + enqueue(v: any): void
+  + dequeue(): void
+  + toArray(): any[]
+  + clear(): void
+  + peek(): any
+  + front(): any
+  + isEmpty(): boolean
+  + size(): number
+}
+
+class SimpleStack {
+  + arr: any[]
+  + push(v: any): void
+  + pop(): void
+  + toArray(): any[]
+  + clear(): void
+  + peek(): any
+  + isEmpty(): boolean
+  + size(): number
+}
+
+@enduml
