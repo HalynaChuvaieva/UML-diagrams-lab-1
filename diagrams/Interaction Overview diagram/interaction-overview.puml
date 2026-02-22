@@ -1,0 +1,52 @@
+@startuml
+skinparam activity {
+  BackgroundColor #FFFFFF
+  BorderColor #CC0000
+  ArrowColor #CC0000
+  FontName Arial
+}
+
+skinparam activityDiamond {
+  BackgroundColor #FFEEEE
+  BorderColor #CC0000
+}
+
+skinparam partition {
+  BorderColor #CC0000
+  BackgroundColor #FAFAFA
+}
+
+title Interaction Overview Diagram: Main User Lifecycle
+
+start
+
+partition "Setup Phase" {
+  :<b>ref</b> Initialize App & Select Structure;
+}
+
+repeat :Wait for User Input;
+
+  if (What does the user want to do?) then (Modify Data)
+    partition "Data Modification Interaction" {
+      :<b>ref</b> Add/Remove Node Sequence;
+      note right: This triggers the EventEmmiter\nand React re-render.
+    }
+    
+  else (Execute Algorithm)
+    partition "Algorithm Execution Interaction" {
+      :<b>ref</b> Run BFS/DFS Strategy;
+      :<b>ref</b> Generate History Array;
+    }
+    
+    partition "Visualization Player Interaction" {
+      :<b>ref</b> AutoPlay / Manual Step Sequence;
+      note right: Uses the Generator function\n(yield) we added earlier.
+    }
+  endif
+
+repeat while (Continue Session?) is (Yes)
+-> No;
+
+stop
+
+@enduml

@@ -1,0 +1,79 @@
+@startuml
+left to right direction
+
+skinparam component {
+  BackgroundColor #FFFFFF
+  BorderColor #CC0000
+  ArrowColor #CC0000
+  FontName Arial
+}
+
+skinparam port {
+  BackgroundColor #FF5555
+  BorderColor #AA0000
+}
+
+skinparam rectangle {
+  BackgroundColor #FFEEEE
+  BorderColor #AA0000
+  FontName Arial
+}
+
+skinparam note {
+  BackgroundColor #FFFFCC
+  BorderColor #CCCC00
+}
+
+title Composite Structure Diagram: App Component Internal Wiring
+
+component "App : React.FC (Main Container)" as App {
+    
+    portin "User Events\n(Clicks, Typing)" as pUser
+    portout "DOM / SVG\n(Visual Output)" as pDOM
+    port "File System\n(JSON)" as pFile
+
+    rectangle "UI Controllers (Subcomponents)" as UIBlock {
+        component "Menu & Controls" as Controls
+        component "Data Editor" as Editor
+        component "Dynamic Renderer" as Renderer
+    }
+
+    rectangle "State Management (React Hooks)" as StateBlock {
+        component "state\n(makeInitialState)" as state
+        component "history & index\n(Array)" as history
+        component "autoplayRef\n(Timer)" as timer
+    }
+
+    rectangle "Business Logic" as LogicBlock {
+        component "Active Algorithm Instance\n(Graph, BST, List, etc.)" as AlgoLogic
+    }
+
+    pUser --> Controls : Trigger actions\n(Play, Step, Reset)
+    pUser --> Editor : Input data
+    
+    Controls --> state : setState()
+    Controls --> history : pushState() / stepBackward()
+    Controls --> timer : start/stop setInterval
+    
+    Editor --> state : modify listData / graphData
+    
+    Controls <--> pFile : saveToFile() / loadFromFile()
+    
+    timer --> state : stepForward()
+    
+    state --> AlgoLogic : Instantiate & pass data
+    AlgoLogic --> state : Return modified structural data
+    
+    state --> Renderer : Pass current structure state
+    Renderer --> pDOM : Render specific View\n(with Framer Motion or SVG)
+}
+
+note right of App
+  This diagram illustrates the internal 
+  wiring of the App component. It acts 
+  as a mediator between User Input (Ports), 
+  Internal State (Hooks), and the 
+  Algorithms logic.
+end note
+
+@enduml

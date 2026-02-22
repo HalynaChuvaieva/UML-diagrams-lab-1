@@ -1,0 +1,51 @@
+@startuml
+title Timing Diagram: Performance Benchmark (Search Operation N=10k)
+
+robust "React UI Thread" as UI
+robust "Unoptimized List\n(Array O(N))" as List
+robust "Optimized Structure\n(Set/Map O(1))" as Set
+
+@0
+UI is Idle
+List is Idle
+Set is Idle
+
+@10
+UI is "Rendering" #FF5555
+List is Idle
+
+@20
+UI is "Idle (Blocked)"
+List is "Searching O(N)" #FF5555
+
+@140
+List is Idle
+UI is "Rendering" #FF5555
+
+@160
+UI is Idle
+
+@180
+UI is "Rendering" #FF5555
+Set is Idle
+
+@190
+UI is "Idle (Blocked)"
+Set is "Searching O(1)" #FF5555
+
+@200
+Set is Idle
+UI is "Rendering" #FF5555
+
+@220
+UI is Idle
+
+' Анотації
+@20 <-> @140 : {Long Delay}
+@190 <-> @200 : {Fast}
+
+legend right
+  The curve shows the blocking of the UI thread 
+during the execution of heavy algorithms.
+end legend
+@enduml

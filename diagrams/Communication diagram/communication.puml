@@ -1,0 +1,39 @@
+@startuml
+skinparam object {
+  BackgroundColor #FFFFFF
+  BorderColor #CC0000
+  ArrowColor #CC0000
+  HeaderBackgroundColor #FFEEEE
+  FontName Arial
+}
+
+skinparam note {
+  BackgroundColor #FFFFCC
+  BorderColor #CCCC00
+}
+
+title Communication Diagram: Adding an Edge with Observer Pattern
+
+object "<u>:User</u>" as User
+object "<u>view : GraphView</u>" as View
+object "<u>myGraph : Graph</u>" as Graph
+object "<u>adjacencyList : Map</u>" as Map
+
+User -right-> View : 1: click "Add Edge (u, v)"
+
+View -down-> Graph : 2: addEdge(u, v)
+
+Graph -right-> Map : 2.1: get(u).add(v)\n2.2: get(v).add(u)
+
+Graph -up-> View : 3: emit('edgeAdded', payload)
+
+View -left-> View : 4: setGraph(newState) \n // triggers re-render
+
+note bottom of Graph
+  Instead of the View constantly checking 
+  the Graph, the Graph uses the Observer 
+  pattern (EventEmitter) to actively 
+  notify the View when data changes.
+end note
+
+@enduml
