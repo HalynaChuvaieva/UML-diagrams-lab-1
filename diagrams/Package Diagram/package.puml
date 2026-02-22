@@ -1,0 +1,46 @@
+@startuml
+title Package Diagram: Project Structure
+left to right direction
+
+skinparam package {
+  BackgroundColor #FFEEEE
+  BorderColor #CC0000
+  FontColor #990000
+}
+
+package "node_modules" {
+  [react]
+  [framer-motion]
+}
+
+package "src" {
+  package "components" {
+    [StructureMenu.jsx]
+    package "visualizers" {
+      [BSTView.jsx]
+      [GraphView.jsx]
+      [ListView.jsx]
+      [QueueView.jsx]
+      [StackView.jsx]
+    }
+  }
+
+  package "algorithms" {
+    [ALVTree.js]
+    [BalancedBST.js]
+    [SimpleBST.js]
+    [Graph.js]
+    [DirectedGraph.js]
+    [WeightedGraph.js]
+    [LinkedList.js]
+    [SimpleQueue.js]
+    [SimpleStack.js]
+  }
+}
+
+' Зв'язки
+visualizers ..> algorithms : "imports logic"
+components ..> react : "uses"
+visualizers ..> [framer-motion] : "animates"
+
+@enduml
