@@ -1,90 +1,107 @@
+type Comparator<T> = (a: T, b: T) => number;
+
+class TreeNode<T> {
+  public value: T;
+  public left: TreeNode<T> | null = null;
+  public right: TreeNode<T> | null = null;
+
+  constructor(value: T) {
+    this.value = value;
+  }
+}
+
 export default class SimpleBST<T> {
-  private root: TreeNode<T> | null;
 
-  constructor() {
-    this.root = null;
+  private root: TreeNode<T> | null = null;
+  private compare: Comparator<T>;
+
+  constructor(compareFn: Comparator<T>) {
+    this.compare = compareFn;
   }
 
-  private createNode(v: T): TreeNode<T> {
-    return { v, left: null, right: null };
-  }
 
-  insert(v: T): void {
-    const node = this.createNode(v);
+  public insert(value: T): void {
+    const node = new TreeNode(value);
 
     if (!this.root) {
       this.root = node;
       return;
     }
 
-    let cur = this.root;
+    let current = this.root;
+
     while (true) {
-      if (v < cur.v) {
-        if (!cur.left) {
-          cur.left = node;
+      if (this.compare(value, current.value) < 0) {
+        if (!current.left) {
+          current.left = node;
           return;
         }
-        cur = cur.left;
+        current = current.left;
       } else {
-        if (!cur.right) {
-          cur.right = node;
+        if (!current.right) {
+          current.right = node;
           return;
         }
-        cur = cur.right;
+        current = current.right;
       }
     }
   }
 
-  private _inorder(node: TreeNode<T> | null, out: T[]): void {
+
+  public inorder(): T[] {
+    const result: T[] = [];
+    this.inorderTraversal(this.root, result);
+    return result;
+  }
+
+  private inorderTraversal(node: TreeNode<T> | null, out: T[]): void {
     if (!node) return;
-    this._inorder(node.left, out);
-    out.push(node.v);
-    this._inorder(node.right, out);
+    this.inorderTraversal(node.left, out);
+    out.push(node.value);
+    this.inorderTraversal(node.right, out);
   }
 
-  inorder(): T[] {
-    const out: T[] = [];
-    this._inorder(this.root, out);
-    return out;
+
+  public delete(value: T): void {
+    this.root = this.deleteNode(this.root, value);
   }
 
-  minValue(node: TreeNode<T> | null): T | null {
-    if (!node) return null;
-    let current = node;
-    while (current.left) current = current.left;
-    return current.v;
-  }
-
-  private _deleteNode(node: TreeNode<T> | null, value: T): TreeNode<T> | null {
+  private deleteNode(
+    node: TreeNode<T> | null,
+    value: T
+  ): TreeNode<T> | null {
     if (!node) return null;
 
-    if (value < node.v) {
-      node.left = this._deleteNode(node.left, value);
-    } else if (value > node.v) {
-      node.right = this._deleteNode(node.right, value);
+    const cmp = this.compare(value, node.value);
+
+    if (cmp < 0) {
+      node.left = this.deleteNode(node.left, value);
+    } else if (cmp > 0) {
+      node.right = this.deleteNode(node.right, value);
     } else {
       if (!node.left && !node.right) return null;
-      if (!node.left) return node.right; 
-      if (!node.right) return node.left; 
+      if (!node.left) return node.right;
+      if (!node.right) return node.left;
 
-      const minVal = this.minValue(node.right);
-      node.v = minVal!;
-      node.right = this._deleteNode(node.right, minVal!);
+      const successor = this.minNode(node.right)!;
+      node.value = successor.value;
+      node.right = this.deleteNode(node.right, successor.value);
     }
+
     return node;
   }
 
-  deleteNode(value: T): void {
-    this.root = this._deleteNode(this.root, value);
+  private minNode(node: TreeNode<T>): TreeNode<T> {
+    let current = node;
+    while (current.left) current = current.left;
+    return current;
   }
 
-  clear(): void {
+  public clear(): void {
     this.root = null;
   }
-}
 
-interface TreeNode<T> {
-  v: T;
-  left: TreeNode<T> | null;
-  right: TreeNode<T> | null;
+  public isEmpty(): boolean {
+    return this.root === null;
+  }
 }

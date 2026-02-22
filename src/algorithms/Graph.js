@@ -1,93 +1,133 @@
-export default class Graph<T> {
+export interface GraphJSON<T> {
   vertices: T[];
   edges: [T, T][];
+}
 
-  constructor(vertices: T[] = []) {
-    this.vertices = [...vertices];
-    this.edges = [];
+export interface SpanningTree<T> {
+  vertices: T[];
+  edges: [T, T][];
+}
+
+export default class Graph<T> {
+
+  private vertices: Set<T>;
+  private adjacency: Map<T, Set<T>>;
+
+  constructor(initialVertices: T[] = []) {
+    this.vertices = new Set(initialVertices);
+    this.adjacency = new Map();
+
+    for (const v of initialVertices) {
+      this.adjacency.set(v, new Set());
+    }
   }
 
-  addVertex(v: T): void {
-    if (!this.vertices.includes(v)) this.vertices.push(v);
+
+  public addVertex(vertex: T): void {
+    if (!this.vertices.has(vertex)) {
+      this.vertices.add(vertex);
+      this.adjacency.set(vertex, new Set());
+    }
   }
 
-  addEdge(u: T, v: T): void {
-    if (!this.vertices.includes(u)) this.vertices.push(u);
-    if (!this.vertices.includes(v)) this.vertices.push(v);
-    this.edges.push([u, v]);
-    this.edges.push([v, u]); 
+  public addEdge(from: T, to: T): void {
+    this.addVertex(from);
+    this.addVertex(to);
+
+    this.adjacency.get(from)!.add(to);
+    this.adjacency.get(to)!.add(from); 
   }
 
-  clear(): void {
-    this.vertices = [];
-    this.edges = [];
+  public clear(): void {
+    this.vertices.clear();
+    this.adjacency.clear();
   }
 
-  toJSON(): object {
-    return { vertices: this.vertices, edges: this.edges };
-  }
 
-  fromJSON(obj: { vertices?: T[]; edges?: [T, T][] }): void {
-    if (obj.vertices) this.vertices = [...obj.vertices];
-    if (obj.edges) this.edges = [...obj.edges];
-  }
+  public bfs(start: T): T[] {
+    if (!this.vertices.has(start)) return [];
 
-  bfs(start: T): T[] {
     const visited = new Set<T>();
-    const queue: T[] = [];
-    const order: T[] = [];
-
-    if (!this.vertices.includes(start)) return order;
+    const queue: T[] = [start];
+    const result: T[] = [];
 
     visited.add(start);
-    queue.push(start);
 
     while (queue.length > 0) {
       const current = queue.shift()!;
-      order.push(current);
+      result.push(current);
 
-      const neighbors = this.edges
-        .filter(([u]) => u === current)
-        .map(([_, v]) => v);
-
-      for (const neighbor of neighbors) {
+      for (const neighbor of this.adjacency.get(current)!) {
         if (!visited.has(neighbor)) {
           visited.add(neighbor);
           queue.push(neighbor);
         }
       }
     }
-    return order;
+
+    return result;
   }
 
-  buildSpanningTree(start: T): { vertices: T[]; edges: [T, T][] } {
-    const visited = new Set<T>();
-    const treeEdges: [T, T][] = [];
-    const queue: T[] = [];
-
-    if (!this.vertices.includes(start))
+  public buildSpanningTree(start: T): SpanningTree<T> {
+    if (!this.vertices.has(start)) {
       return { vertices: [], edges: [] };
+    }
+
+    const visited = new Set<T>();
+    const edges: [T, T][] = [];
+    const queue: T[] = [start];
 
     visited.add(start);
-    queue.push(start);
 
     while (queue.length > 0) {
       const current = queue.shift()!;
 
-      const neighbors = this.edges
-        .filter(([u]) => u === current)
-        .map(([_, v]) => v);
-
-      for (const neighbor of neighbors) {
+      for (const neighbor of this.adjacency.get(current)!) {
         if (!visited.has(neighbor)) {
           visited.add(neighbor);
-          treeEdges.push([current, neighbor]);
+          edges.push([current, neighbor]);
           queue.push(neighbor);
         }
       }
     }
 
-    const treeVertices = Array.from(visited);
-    return { vertices: treeVertices, edges: treeEdges };
+    return {
+      vertices: Array.from(visited),
+      edges
+    };
+  }
+
+public toJSON(): GraphJSON<T> {
+  const edges: [T, T][] = [];
+  const seen = new Set<string>();
+
+  for (const [from, neighbors] of this.adjacency) {
+    for (const to of neighbors) {
+      const key = `${from}->${to}`;
+      const reverseKey = `${to}->${from}`;
+
+      if (!seen.has(reverseKey)) {
+        edges.push([from, to]);
+        seen.add(key);
+      }
+    }
+  }
+
+  return {
+    vertices: Array.from(this.vertices),
+    edges
+  };
+}
+  
+  public fromJSON(data: GraphJSON<T>): void {
+    this.clear();
+
+    for (const v of data.vertices) {
+      this.addVertex(v);
+    }
+
+    for (const [from, to] of data.edges) {
+      this.addEdge(from, to);
+    }
   }
 }
